@@ -258,7 +258,7 @@ inline void DrawString(const Surface &out, std::string_view text, const Point &p
  */
 void DrawStringWithColors(const Surface &out, std::string_view fmt, DrawStringFormatArg *args, std::size_t argsLen, const Rectangle &rect, TextRenderOptions opts = {});
 
-inline void DrawStringWithColors(const Surface &out, std::string_view fmt, std::vector<DrawStringFormatArg> args, const Rectangle &rect, TextRenderOptions opts = {})
+inline void DrawStringWithColors(const Surface &out, std::string_view fmt, const std::span<DrawStringFormatArg> args, const Rectangle &rect, TextRenderOptions opts = {})
 {
 	return DrawStringWithColors(out, fmt, args.data(), args.size(), rect, opts);
 }

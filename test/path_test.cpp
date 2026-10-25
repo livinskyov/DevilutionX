@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <cstddef>
+#include <ranges>
 #include <span>
 
 #include <gmock/gmock.h>
@@ -53,7 +54,7 @@ TEST(PathTest, Heuristics)
 
 // These symbols are in terms of coordinates (not in terms of on-screen direction).
 // -1, -1 is top-left.
-enum class Dir {
+enum class Dir : int8_t {
 	None,
 	Up,
 	Left,
@@ -73,23 +74,17 @@ std::ostream &operator<<(std::ostream &os, Dir dir)
 
 std::vector<Dir> ToSyms(std::span<const std::string> strings)
 {
-	std::vector<Dir> result;
-	result.reserve(strings.size());
-	for (const std::string &str : strings)
-		result.emplace_back(static_cast<Dir>(std::distance(DirSymbols.begin(), c_find(DirSymbols, str))));
-	return result;
+	return strings | std::views::transform([](const std::string &str) { return Dir { static_cast<int8_t>(std::distance(DirSymbols.begin(), c_find(DirSymbols, str))) }; })
+	               | std::ranges::to<std::vector>();
 }
 
 std::vector<Dir> ToSyms(std::span<const int8_t> indices)
 {
-	std::vector<Dir> result;
-	result.reserve(indices.size());
-	for (const int8_t idx : indices)
-		result.emplace_back(static_cast<Dir>(idx));
-	return result;
+	return indices | std::transform([](const int8_t idx) { return Dir { idx }; })
+	               | std::ranges::to<std::vector>();
 }
 
-void CheckPath(Point startPosition, Point destinationPosition, std::vector<std::string> expectedSteps)
+void CheckPath(Point startPosition, Point destinationPosition, const std::span<const std::string> expectedSteps)
 {
 	// Restrict tests to the longest possible path length in vanilla Diablo
 	constexpr size_t MaxPathLength = 24;
@@ -156,7 +151,10 @@ TEST(PathTest, LongPaths)
 
 	// Longest possible path used to be 24 steps meaning tiles 24 units away are reachable
 	const Point startingPosition { 56, 56 };
-	CheckPath(startingPosition, startingPosition + Displacement { 24, 24 }, std::vector<std::string>(24, "↘"));
+	const std::array<std::string, 24> steps { "↘", "↘", "↘", "↘", "↘", "↘", "↘", "↘",
+	                                          "↘", "↘", "↘", "↘", "↘", "↘", "↘", "↘",
+	                                          "↘", "↘", "↘", "↘", "↘", "↘", "↘", "↘", };
+	CheckPath(startingPosition, startingPosition + Displacement { 24, 24 }, steps);
 
 	// But trying to navigate 25 units fails
 	CheckPath(startingPosition, startingPosition + Displacement { 25, 25 }, {});

@@ -794,8 +794,7 @@ void InitTowners()
 		// specifically for the cows that need to read this value to fill adjacent tiles
 		dMonster[entry.position.x][entry.position.y] = i + 1;
 
-		Towners.emplace_back();
-		InitTownerInfo(Towners.back(), *behaviorIt->second, entry);
+		InitTownerInfo(Towners.emplace_back(), *behaviorIt->second, entry);
 		i++;
 	}
 }

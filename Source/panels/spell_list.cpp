@@ -230,7 +230,7 @@ std::vector<SpellListItem> GetSpellListItems()
 			const int lx = x;
 			const int ly = y - SPLICONLENGTH;
 			const bool isSelected = (MousePosition.x >= lx && MousePosition.x < lx + SPLICONLENGTH && MousePosition.y >= ly && MousePosition.y < ly + SPLICONLENGTH);
-			spellListItems.emplace_back(SpellListItem { { x, y }, static_cast<SpellType>(i), static_cast<SpellID>(j), isSelected });
+			spellListItems.emplace_back(Point { x, y }, static_cast<SpellType>(i), static_cast<SpellID>(j), isSelected);
 			x -= SPLICONLENGTH;
 			if (x == mainPanelPosition.x + 12 - SPLICONLENGTH) {
 				x = mainPanelPosition.x + 12 + SPLICONLENGTH * SPLROWICONLS;

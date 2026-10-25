@@ -131,20 +131,11 @@ void RefreshVisualStoreLayout()
 	std::span<Item> items = GetVisualStoreItems();
 
 	if (items.empty()) {
-		VisualStore.pages.emplace_back();
-		VisualStorePage &page = VisualStore.pages.back();
-		memset(page.grid, 0, sizeof(page.grid));
+		VisualStore.pages.emplace_back(); // Value initialization zero-fills page.grid
 		return;
 	}
 
-	auto createNewPage = [&]() -> VisualStorePage & {
-		VisualStore.pages.emplace_back();
-		VisualStorePage &page = VisualStore.pages.back();
-		memset(page.grid, 0, sizeof(page.grid));
-		return page;
-	};
-
-	VisualStorePage *currentPage = &createNewPage();
+	VisualStorePage *currentPage = &VisualStore.pages.emplace_back(); // Value initialization zero-fills page.grid
 
 	for (uint16_t i = 0; i < static_cast<uint16_t>(items.size()); i++) {
 		const Item &item = items[i];
@@ -176,7 +167,7 @@ void RefreshVisualStoreLayout()
 
 		if (!placed) {
 			// Start new page
-			currentPage = &createNewPage();
+			currentPage = &VisualStore.pages.emplace_back(); // Value initialization zero-fills page.grid
 			// Try placing again in new page
 			for (auto stashPosition : PointsInRectangle(Rectangle { { 0, 0 }, Size { VisualStoreGridWidth - (itemSize.width - 1), VisualStoreGridHeight - (itemSize.height - 1) } })) {
 				bool isSpaceFree = true;

@@ -238,11 +238,8 @@ void LoadOptions()
 	for (size_t i = 0; i < QuickMessages.size(); i++) {
 		const std::span<const Ini::Value> values = ini->get("NetMsg", QuickMessages[i].key);
 		std::vector<std::string> &result = options.Chat.szHotKeyMsgs[i];
-		result.clear();
-		result.reserve(values.size());
-		for (const Ini::Value &value : values) {
-			result.emplace_back(value.value);
-		}
+		const auto view = values | std::views::transform(&Ini::Value::value);
+		result.assign(view.begin(), view.end());
 	}
 
 	ini->getUtf8Buf("Controller", "Mapping", options.Controller.szMapping, sizeof(options.Controller.szMapping));
@@ -1571,30 +1568,21 @@ ModOptions::ModOptions()
 
 std::vector<std::string_view> ModOptions::GetActiveModList()
 {
-	std::vector<std::string_view> modList;
-	for (auto &modEntry : GetModEntries()) {
-		if (*modEntry.enabled)
-			modList.emplace_back(modEntry.name);
-	}
-	return modList;
+	return GetModEntries() | std::views::filter([](const ModOptions::ModEntry &entry) { return *entry.enabled; })
+	                       | std::views::transform([](const ModOptions::ModEntry &entry) -> std::string_view { return entry.name; })
+	                       | std::ranges::to<std::vector>();
 }
 
 std::vector<std::string_view> ModOptions::GetModList()
 {
-	std::vector<std::string_view> modList;
-	for (auto &modEntry : GetModEntries()) {
-		modList.emplace_back(modEntry.name);
-	}
-	return modList;
+	return GetModEntries() | std::views::transform([](const ModOptions::ModEntry &entry) -> std::string_view { return entry.name; })
+	                       | std::ranges::to<std::vector>();
 }
 
 std::vector<OptionEntryBase *> ModOptions::GetEntries()
 {
-	std::vector<OptionEntryBase *> optionEntries;
-	for (auto &modEntry : GetModEntries()) {
-		optionEntries.emplace_back(&modEntry.enabled);
-	}
-	return optionEntries;
+	return GetModEntries() | std::views::transform([](ModOptions::ModEntry &entry) -> OptionEntryBase * { return &entry.enabled; })
+	                       | std::ranges::to<std::vector>();
 }
 
 void ModOptions::AddModEntry(const std::string &modName)

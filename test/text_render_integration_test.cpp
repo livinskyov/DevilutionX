@@ -380,7 +380,7 @@ TEST_P(TextRenderIntegrationTest, RenderAndCompareTest)
 {
 	const TestFixture &fixture = GetParam();
 
-	OwnedSurface out = OwnedSurface { fixture.width + 20, fixture.height + 20 };
+	OwnedSurface out { fixture.width + 20, fixture.height + 20 };
 	SDL_SetSurfacePalette(out.surface, palette.get());
 	ASSERT_NE(out.surface, nullptr);
 

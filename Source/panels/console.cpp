@@ -162,7 +162,7 @@ void PrepareForRender(ConsoleLine &consoleLine)
 
 void AddConsoleLine(ConsoleLine &&consoleLine)
 {
-	ConsoleLines.emplace_back(std::move(consoleLine));
+	ConsoleLines.push_back(std::move(consoleLine));
 }
 
 void SendInput()

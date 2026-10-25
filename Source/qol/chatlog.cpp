@@ -4,6 +4,7 @@
  * Implementation of the in-game chat log.
  */
 #include <ctime>
+#include <ranges>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -125,23 +126,33 @@ void AddMessageToChatLog(std::string_view message, Player *player, UiFlags flags
 	    : StrCat("[#", MessageCounter, "] ");
 	const size_t oldSize = ChatLogLines.size();
 	if (player == nullptr) {
-		ChatLogLines.emplace_back(MultiColoredText { "{0} {1}", { { timestamp, UiFlags::ColorRed }, { std::string(message), flags } } });
+		std::vector<ColoredText> textLines;
+		textLines.reserve(2);
+		textLines.emplace_back(std::move(timestamp), UiFlags::ColorRed);
+		textLines.emplace_back(std::string(message), flags);
+		ChatLogLines.emplace_back("{0} {1}", std::move(textLines));
 	} else {
 		std::string playerInfo = FormatRuntime(_("{:s} (lvl {:d}): "), player->_pName, player->getCharacterLevel());
-		UiFlags nameColor = player == MyPlayer ? UiFlags::ColorWhitegold : UiFlags::ColorBlue;
+		const UiFlags nameColor = player == MyPlayer ? UiFlags::ColorWhitegold : UiFlags::ColorBlue;
 		const std::string prefix = timestamp + " - " + playerInfo;
-		const std::string text = WordWrapString(prefix + std::string(message), ContentTextWidth);
+		std::string text = WordWrapString(prefix + std::string(message), ContentTextWidth);
 		std::vector<std::string> lines;
-		std::stringstream ss(text);
+		std::istringstream ss(std::move(text));
 
 		for (std::string s; getline(ss, s, '\n');) {
 			lines.push_back(std::move(s));
 		}
 		for (int i = static_cast<int>(lines.size()) - 1; i >= 1; i--) {
-			ChatLogLines.emplace_back(MultiColoredText { lines[i], {} });
+			ChatLogLines.emplace_back(lines[i]);
 		}
 		lines[0].erase(0, prefix.length());
-		ChatLogLines.emplace_back(MultiColoredText { "{0} - {1}{2}", { { timestamp, UiFlags::ColorRed }, { playerInfo, nameColor }, { lines[0], UiFlags::ColorWhite } } });
+
+		std::vector<ColoredText> textLines;
+		textLines.reserve(3);
+		textLines.emplace_back(std::move(timestamp), UiFlags::ColorRed);
+		textLines.emplace_back(std::move(playerInfo), nameColor);
+		textLines.emplace_back(lines[0], UiFlags::ColorWhite);
+		ChatLogLines.emplace_back("{0} - {1}{2}", std::move(textLines));
 	}
 
 	const size_t diff = ChatLogLines.size() - oldSize;
@@ -191,10 +202,8 @@ void DrawChatLog(const Surface &out)
 		const MultiColoredText &text = ChatLogLines[ChatLogLines.size() - (i + SkipLines + 1)];
 		const std::string_view line = text.text;
 
-		std::vector<DrawStringFormatArg> args;
-		for (auto &x : text.colors) {
-			args.emplace_back(x.text, x.color);
-		}
+		auto args = text.colors | std::views::transform([](const ColoredText &x) { return DrawStringFormatArg { x.text, x.color }; })
+		                        | std::ranges::to<std::vector>();
 		DrawStringWithColors(out, line, args, { { sx, contentY + (i * lineHeight) }, { ContentTextWidth, lineHeight } },
 		    { .flags = UiFlags::ColorWhite, .lineHeight = lineHeight });
 	}

@@ -395,10 +395,8 @@ std::expected<void, PacketError> base_protocol<P>::recv_decrypted(packet &pkt, e
 				playerNames.emplace_back(playerNameBuffer);
 			}
 		}
-		std::string gameName;
-		size_t gameNameSize = infoBuffer.size() - neededSize;
-		gameName.resize(gameNameSize);
-		std::memcpy(&gameName[0], infoBuffer.data() + neededSize, gameNameSize);
+		std::string gameName(infoBuffer.size() - neededSize, '\0');
+		std::memcpy(gameName.data(), infoBuffer.data() + neededSize, gameName.size());
 		game_list[gameName] = GameListValue { gameData, std::move(playerNames), sender };
 		return {};
 	}

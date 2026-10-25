@@ -199,7 +199,7 @@ DVL_ALWAYS_INLINE void ReencodeFloorWithFoliage(uint8_t *&dst, const uint8_t *&s
 	ExtractFoliageTransparentSquare(dst, surfaceLastLine);
 }
 
-size_t GetReencodedSize(const uint8_t *dungeonCels, std::span<std::pair<uint16_t, DunFrameInfo>> frames)
+size_t GetReencodedSize(const uint8_t *dungeonCels, const std::span<const std::pair<uint16_t, DunFrameInfo>> frames)
 {
 	size_t result = (2 + frames.size()) * 4;
 	const auto *srcOffsets = reinterpret_cast<const uint32_t *>(dungeonCels);
@@ -239,7 +239,7 @@ size_t GetReencodedSize(const uint8_t *dungeonCels, std::span<std::pair<uint16_t
 
 } // namespace
 
-void ReencodeDungeonCels(std::unique_ptr<std::byte[]> &dungeonCels, std::span<std::pair<uint16_t, DunFrameInfo>> frames)
+void ReencodeDungeonCels(std::unique_ptr<std::byte[]> &dungeonCels, const std::span<const std::pair<uint16_t, DunFrameInfo>> frames)
 {
 	const auto *srcData = reinterpret_cast<const uint8_t *>(dungeonCels.get());
 	const auto *srcOffsets = reinterpret_cast<const uint32_t *>(srcData);
@@ -302,12 +302,12 @@ void ReencodeDungeonCels(std::unique_ptr<std::byte[]> &dungeonCels, std::span<st
 	dungeonCels = std::move(result);
 }
 
-std::vector<std::pair<uint16_t, uint16_t>> ComputeCelBlockAdjustments(std::span<std::pair<uint16_t, DunFrameInfo>> frames)
+std::vector<std::pair<uint16_t, uint16_t>> ComputeCelBlockAdjustments(const std::span<const std::pair<uint16_t, DunFrameInfo>> frames)
 {
 	std::vector<std::pair<uint16_t, uint16_t>> celBlockAdjustments;
 	uint16_t lastFrameIndex = 0;
 	uint16_t adjustment = 0;
-	for (auto &[frame, info] : frames) {
+	for (const auto &[frame, info] : frames) {
 		const uint16_t diff = frame - lastFrameIndex - 1;
 		if (diff > 0) celBlockAdjustments.emplace_back(frame, adjustment);
 		adjustment += diff;

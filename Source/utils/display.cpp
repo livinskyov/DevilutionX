@@ -202,9 +202,9 @@ void UpdateAvailableResolutions()
 		int w = mode.w;
 		int h = mode.h;
 		if (w < h) std::swap(w, h);
-		sizes.emplace_back(Size {
+		sizes.emplace_back(
 		    static_cast<int>(w * scaleFactor),
-		    static_cast<int>(h * scaleFactor) });
+		    static_cast<int>(h * scaleFactor));
 	}
 	supportsAnyResolution = *GetOptions().Graphics.upscale;
 #elif !defined(USE_SDL1)
@@ -232,9 +232,9 @@ void UpdateAvailableResolutions()
 			if (modes[i]->w < modes[i]->h) {
 				std::swap(modes[i]->w, modes[i]->h);
 			}
-			sizes.emplace_back(Size {
+			sizes.emplace_back(
 			    static_cast<int>(modes[i]->w * scaleFactor),
-			    static_cast<int>(modes[i]->h * scaleFactor) });
+			    static_cast<int>(modes[i]->h * scaleFactor));
 		}
 	}
 #endif

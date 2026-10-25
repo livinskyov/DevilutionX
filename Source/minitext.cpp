@@ -50,7 +50,7 @@ void LoadText(std::string_view text)
 	size_t previous = 0;
 	while (true) {
 		const size_t next = paragraphs.find('\n', previous);
-		TextLines.emplace_back(paragraphs.substr(previous, next - previous));
+		TextLines.push_back(paragraphs.substr(previous, next - previous));
 		if (next == std::string::npos)
 			break;
 		previous = next + 1;

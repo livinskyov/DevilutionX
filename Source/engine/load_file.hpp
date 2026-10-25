@@ -169,12 +169,12 @@ struct MultiFileLoader {
 				memcpy(paths.back().data(), path, strlen(path) + 1);
 			}
 			const char *path = paths.back().data();
-			files.emplace_back(FindAsset(path));
+			files.push_back(FindAsset(path));
 			if (!ValidatAssetRef(path, files.back()))
 				return nullptr;
 
 			const size_t size = files.back().size();
-			sizes.emplace_back(static_cast<uint32_t>(size));
+			sizes.push_back(static_cast<uint32_t>(size));
 			outOffsets[j] = static_cast<uint32_t>(totalSize);
 			totalSize += size;
 			++j;

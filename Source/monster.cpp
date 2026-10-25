@@ -3630,7 +3630,7 @@ std::expected<void, std::string> InitAllMonsterGFX()
 	using LevelMonsterTypeIndices = StaticVector<size_t, 8>;
 	std::vector<LevelMonsterTypeIndices> monstersBySprite(GetNumMonsterSprites());
 	for (size_t i = 0; i < LevelMonsterTypeCount; ++i) {
-		monstersBySprite[static_cast<size_t>(LevelMonsterTypes[i].data().spriteId)].emplace_back(i);
+		monstersBySprite[static_cast<size_t>(LevelMonsterTypes[i].data().spriteId)].push_back(i);
 	}
 	size_t totalUniqueBytes = 0;
 	size_t totalBytes = 0;

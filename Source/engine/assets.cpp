@@ -749,20 +749,20 @@ void LoadModArchives(std::span<const std::string_view> modnames)
 		const std::string_view modname = activeMods[i];
 		targetPath = StrCat(paths::PrefPath(), "mods" DIRECTORY_SEPARATOR_STR, modname, DIRECTORY_SEPARATOR_STR);
 		if (DirectoryExists(targetPath)) {
-			OverridePaths.emplace_back(targetPath);
+			OverridePaths.push_back(std::move(targetPath));
 #ifndef UNPACKED_MPQS
 			hasLooseOverride[i] = true;
 #endif
 		}
 		targetPath = StrCat(paths::BasePath(), "mods" DIRECTORY_SEPARATOR_STR, modname, DIRECTORY_SEPARATOR_STR);
 		if (DirectoryExists(targetPath)) {
-			OverridePaths.emplace_back(targetPath);
+			OverridePaths.push_back(std::move(targetPath));
 #ifndef UNPACKED_MPQS
 			hasLooseOverride[i] = true;
 #endif
 		}
 	}
-	OverridePaths.emplace_back(paths::PrefPath());
+	OverridePaths.push_back(paths::PrefPath());
 
 	int priority = 10000;
 	auto paths = GetMPQSearchPaths();

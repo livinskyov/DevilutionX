@@ -148,7 +148,7 @@ PaletteKdTree::PaletteKdTree(const SDL_Color palette[256], int skipFrom, int ski
 	StaticVector<uint8_t, 256> leafValues[NumLeaves];
 	for (int i = 0; i < 256; ++i) {
 		if (i >= skipFrom && i <= skipTo) continue;
-		leafValues[LeafIndexForColor(tree_, palette[i])].emplace_back(i);
+		leafValues[LeafIndexForColor(tree_, palette[i])].push_back(i);
 	}
 
 	size_t totalLen = 0;

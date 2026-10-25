@@ -520,7 +520,7 @@ HeroCompareResult CompareSaves(const std::string &actualSavePath, const std::str
 			StrAppend(message, "\nDiff found in ", location, " count: ", count);
 		}
 	}
-	return { compareResult ? HeroCompareResult::Same : HeroCompareResult::Difference, message };
+	return { compareResult ? HeroCompareResult::Same : HeroCompareResult::Difference, std::move(message) };
 }
 #endif // !DISABLE_DEMOMODE
 

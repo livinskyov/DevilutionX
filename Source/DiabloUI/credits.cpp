@@ -66,7 +66,7 @@ public:
 			size_t previous = 0;
 			while (true) {
 				const size_t next = paragraphs.find('\n', previous);
-				linesToRender.emplace_back(LineContent { offset, paragraphs.substr(previous, next - previous) });
+				linesToRender.emplace_back(offset, paragraphs.substr(previous, next - previous));
 				if (next == std::string::npos)
 					break;
 				previous = next + 1;

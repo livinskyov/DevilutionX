@@ -1759,7 +1759,7 @@ void CycleSpellHotkeys(bool next)
 			// found current
 			currentIndex = validHotKeyIndexes.size();
 		}
-		validHotKeyIndexes.emplace_back(slot);
+		validHotKeyIndexes.push_back(slot);
 	}
 	if (validHotKeyIndexes.size() == 0)
 		return;

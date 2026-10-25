@@ -931,7 +931,8 @@ void Render(const UiList &uiList)
 		if (item.args.empty()) {
 			DrawString(out, text, rectangle, { .flags = uiFlags, .spacing = uiList.GetSpacing() });
 		} else {
-			DrawStringWithColors(out, text, item.args, rectangle, { .flags = uiFlags, .spacing = uiList.GetSpacing() });
+			auto args = item.args;
+			DrawStringWithColors(out, text, args, rectangle, { .flags = uiFlags, .spacing = uiList.GetSpacing() });
 		}
 	}
 }

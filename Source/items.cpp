@@ -3331,7 +3331,7 @@ void TryRandomUniqueItem(Item &item, _item_indexes idx, int8_t mLevel, int uper,
 	for (auto &possibleUid : validUniques) {
 		// Verify item hasn't been dropped yet. We set this to true in MP, since uniques previously dropping shouldn't prevent further identical uniques from dropping.
 		if (!UniqueItemFlags[possibleUid] || gbIsMultiplayer) {
-			uids.emplace_back(possibleUid);
+			uids.push_back(possibleUid);
 		}
 	}
 

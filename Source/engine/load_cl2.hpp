@@ -47,12 +47,12 @@ std::expected<OwnedClxSpriteSheet, std::string> LoadMultipleCl2Sheet(tl::functio
 			memcpy(paths.back().data(), path, strlen(path) + 1);
 		}
 		const char *path = paths.back().data();
-		files.emplace_back(FindAsset(path));
+		files.push_back(FindAsset(path));
 		if (!files.back().ok()) {
 			FailedToOpenFileError(path, files.back().error());
 		}
 		const size_t size = files.back().size();
-		fileSizes.emplace_back(size);
+		fileSizes.push_back(size);
 		totalSize += size;
 	}
 	auto data = std::unique_ptr<uint8_t[]> { new uint8_t[totalSize] };

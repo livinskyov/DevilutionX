@@ -195,7 +195,7 @@ int FindPath(tl::function_ref<bool(Point, Point)> canStep, tl::function_ref<bool
 	StaticVector<FrontierNode, MaxPathNodes> frontier;
 	ExploredNodes explored;
 	{
-		frontier.emplace_back(FrontierNode { .position = start, .f = initialHeuristicCost });
+		frontier.push_back(FrontierNode { .position = start, .f = initialHeuristicCost });
 		explored.emplace(start, ExploredNode { .prev = {}, .g = 0 });
 	}
 
@@ -272,7 +272,7 @@ int FindPath(tl::function_ref<bool(Point, Point)> canStep, tl::function_ref<bool
 				if (frontier.size() < MaxPathNodes) {
 					// We always push the node to the heap, even if the same position already exists in it.
 					// When popping from the heap, we discard invalid nodes by checking that `g + h <= f`.
-					frontier.emplace_back(FrontierNode { .position = neighborPos, .f = f });
+					frontier.push_back(FrontierNode { .position = neighborPos, .f = f });
 					std::push_heap(frontier.begin(), frontier.end(), frontierComparator);
 				}
 			}
