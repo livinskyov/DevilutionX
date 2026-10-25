@@ -267,10 +267,10 @@ TEST(ModIdentity, ActiveModSaveExtensionOptInLastWins)
 
 TEST(ModIdentity, OrderModsDependenciesFirst)
 {
-	const std::vector<ModDependency> mods = {
+	const std::array<ModDependency, 2> mods = { {
 		{ "app", { "lib" } },
-		{ "lib", {} },
-	};
+		{ "lib", { } },
+	} };
 	const std::vector<std::string> ordered = OrderModsByDependencies(mods);
 	ASSERT_EQ(ordered.size(), 2u);
 	EXPECT_EQ(ordered[0], "lib");
@@ -279,18 +279,22 @@ TEST(ModIdentity, OrderModsDependenciesFirst)
 
 TEST(ModIdentity, OrderModsStableWithoutDependencies)
 {
-	const std::vector<ModDependency> mods = { { "a", {} }, { "b", {} }, { "c", {} } };
+	const std::array<ModDependency, 3> mods = { {
+		{ "a", { } },
+		{ "b", { } },
+		{ "c", { } }
+	} };
 	const std::vector<std::string> ordered = OrderModsByDependencies(mods);
 	EXPECT_EQ(ordered, (std::vector<std::string> { "a", "b", "c" }));
 }
 
 TEST(ModIdentity, OrderModsTransitiveChain)
 {
-	const std::vector<ModDependency> mods = {
+	const std::array<ModDependency, 3> mods = { {
 		{ "c", { "b" } },
 		{ "b", { "a" } },
-		{ "a", {} },
-	};
+		{ "a", { } },
+	} };
 	const std::vector<std::string> ordered = OrderModsByDependencies(mods);
 	ASSERT_EQ(ordered.size(), 3u);
 	EXPECT_EQ(ordered[0], "a");
@@ -301,7 +305,9 @@ TEST(ModIdentity, OrderModsTransitiveChain)
 TEST(ModIdentity, OrderModsMissingDependencyKeepsMod)
 {
 	// The required mod is not part of the active set: "app" is still emitted (best-effort).
-	const std::vector<ModDependency> mods = { { "app", { "missing" } } };
+	const std::array<ModDependency, 1> mods = { {
+		{ "app", { "missing" } }
+	} };
 	const std::vector<std::string> ordered = OrderModsByDependencies(mods);
 	ASSERT_EQ(ordered.size(), 1u);
 	EXPECT_EQ(ordered[0], "app");
@@ -309,7 +315,10 @@ TEST(ModIdentity, OrderModsMissingDependencyKeepsMod)
 
 TEST(ModIdentity, OrderModsCycleKeepsAllMods)
 {
-	const std::vector<ModDependency> mods = { { "a", { "b" } }, { "b", { "a" } } };
+	const std::array<ModDependency, 2> mods = { {
+		{ "a", { "b" } },
+		{ "b", { "a" } }
+	} };
 	const std::vector<std::string> ordered = OrderModsByDependencies(mods);
 	ASSERT_EQ(ordered.size(), 2u);
 	EXPECT_NE(std::find(ordered.begin(), ordered.end(), "a"), ordered.end());

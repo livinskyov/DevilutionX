@@ -197,7 +197,7 @@ std::string_view GetActiveModSaveExtension()
 	return result;
 }
 
-std::vector<std::string> OrderModsByDependencies(const std::vector<ModDependency> &mods)
+std::vector<std::string> OrderModsByDependencies(const std::span<const ModDependency> mods)
 {
 	std::vector<std::string> ordered;
 	ordered.reserve(mods.size());

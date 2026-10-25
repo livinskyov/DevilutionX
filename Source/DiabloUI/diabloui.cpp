@@ -1,11 +1,7 @@
 #include "DiabloUI/diabloui.h"
 
 #include <algorithm>
-#include <array>
-#include <cstddef>
-#include <cstdint>
 #include <memory>
-#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -191,7 +187,7 @@ bool IsTextInputActive()
 	return UiTextInputState.has_value();
 }
 
-void UiInitList(void (*fnFocus)(size_t value), void (*fnSelect)(size_t value), void (*fnEsc)(), const std::vector<std::unique_ptr<UiItemBase>> &items, bool itemsWraps, void (*fnFullscreen)(), bool (*fnYesNo)(), size_t selectedItem /*= 0*/)
+void UiInitList(void (*fnFocus)(size_t value), void (*fnSelect)(size_t value), void (*fnEsc)(), const std::span<const std::unique_ptr<UiItemBase>> items, bool itemsWraps, void (*fnFullscreen)(), bool (*fnYesNo)(), size_t selectedItem /*= 0*/)
 {
 	SelectedItem = selectedItem;
 	SelectedItemMax = 0;
@@ -1143,19 +1139,19 @@ void UiRenderItem(const UiItemBase &item)
 	}
 }
 
-void UiRenderItems(const std::vector<UiItemBase *> &items)
+void UiRenderItems(const std::span<UiItemBase *const> items)
 {
 	for (const UiItemBase *item : items)
 		UiRenderItem(*item);
 }
 
-void UiRenderItems(const std::vector<std::unique_ptr<UiItemBase>> &items)
+void UiRenderItems(const std::span<const std::unique_ptr<UiItemBase>> items)
 {
 	for (const std::unique_ptr<UiItemBase> &item : items)
 		UiRenderItem(*item);
 }
 
-bool UiItemMouseEvents(SDL_Event *event, const std::vector<UiItemBase *> &items)
+bool UiItemMouseEvents(SDL_Event *event, const std::span<UiItemBase *const> items)
 {
 	if (items.empty()) {
 		return false;
@@ -1183,7 +1179,7 @@ bool UiItemMouseEvents(SDL_Event *event, const std::vector<UiItemBase *> &items)
 	return handled;
 }
 
-bool UiItemMouseEvents(SDL_Event *event, const std::vector<std::unique_ptr<UiItemBase>> &items)
+bool UiItemMouseEvents(SDL_Event *event, const std::span<const std::unique_ptr<UiItemBase>> items)
 {
 	if (items.empty()) {
 		return false;

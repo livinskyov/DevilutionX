@@ -49,16 +49,13 @@ void printNewlineInConsole()
 
 void printfInConsole(const char *fmt, ...)
 {
-	char message[4096];
-	va_list ap;
+	std::va_list ap;
 	va_start(ap, fmt);
-	std::vsnprintf(message, sizeof(message), fmt, ap);
+	vprintfInConsole(fmt, ap);
 	va_end(ap);
-	OutputDebugString(message);
-	WriteToStderr(message);
 }
 
-void vprintfInConsole(const char *fmt, va_list ap)
+void vprintfInConsole(const char *fmt, std::va_list ap)
 {
 	char message[4096];
 	std::vsnprintf(message, sizeof(message), fmt, ap);
@@ -86,7 +83,7 @@ void printfInConsole(const char *fmt, ...)
 {
 	std::va_list ap;
 	va_start(ap, fmt);
-	std::vfprintf(stderr, fmt, ap);
+	vprintfInConsole(fmt, ap);
 	va_end(ap);
 }
 

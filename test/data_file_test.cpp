@@ -3,6 +3,7 @@
 #include "data/file.hpp"
 #include "data/parser.hpp"
 
+#include <array>
 #include <string_view>
 #include <vector>
 
@@ -18,7 +19,7 @@ auto LoadDataFile(std::string_view file)
 
 void TestFileContents(
     const DataFile &dataFile,
-    std::vector<std::vector<std::string_view>> expectedContent,
+    const std::span<const std::vector<std::string_view>> expectedContent,
     GetFieldResult::Status expectedEndOfRecordStatus = GetFieldResult::Status::EndOfRecord,
     GetFieldResult::Status expectedEndOfFileStatus = GetFieldResult::Status::EndOfFile)
 {
@@ -62,12 +63,12 @@ TEST(DataFileTest, LoadCRFile)
 	const DataFile &dataFile = result.value();
 	EXPECT_EQ(dataFile.size(), 33) << "File size should be reported in code units";
 
-	const std::vector<std::vector<std::string_view>> expectedFields {
+	const std::array<std::vector<std::string_view>, 4> expectedFields { {
 		{ "Test", "Empty", "Values" },
 		{ "", "2", "3" },
 		{ "1", "2", "" },
 		{ "1", "", "3" }
-	};
+	} };
 
 	TestFileContents(dataFile, expectedFields, GetFieldResult::Status::BadRecordTerminator, GetFieldResult::Status::FileTruncated);
 }
@@ -80,12 +81,12 @@ TEST(DataFileTest, LoadWindowsFile)
 	const DataFile &dataFile = result.value();
 	EXPECT_EQ(dataFile.size(), 37) << "File size should be reported in code units";
 
-	const std::vector<std::vector<std::string_view>> expectedFields {
+	const std::array<std::vector<std::string_view>, 4> expectedFields { {
 		{ "Test", "Empty", "Values" },
 		{ "", "2", "3" },
 		{ "1", "2", "" },
 		{ "1", "", "3" },
-	};
+	} };
 
 	TestFileContents(dataFile, expectedFields);
 }
@@ -98,12 +99,12 @@ TEST(DataFileTest, LoadTypicalFile)
 	const DataFile &dataFile = result.value();
 	EXPECT_EQ(dataFile.size(), 33) << "File size should be reported in code units";
 
-	const std::vector<std::vector<std::string_view>> expectedFields {
+	const std::array<std::vector<std::string_view>, 4> expectedFields { {
 		{ "Test", "Empty", "Values" },
 		{ "", "2", "3" },
 		{ "1", "2", "" },
 		{ "1", "", "3" },
-	};
+	} };
 
 	TestFileContents(dataFile, expectedFields);
 }
@@ -116,12 +117,12 @@ TEST(DataFileTest, LoadFileWithNoTrailingNewline)
 	const DataFile &dataFile = result.value();
 	EXPECT_EQ(dataFile.size(), 32) << "File size should be reported in code units";
 
-	const std::vector<std::vector<std::string_view>> expectedFields {
+	const std::array<std::vector<std::string_view>, 4> expectedFields { {
 		{ "Test", "Empty", "Values" },
 		{ "", "2", "3" },
 		{ "1", "2", "" },
 		{ "1", "", "3" },
-	};
+	} };
 
 	TestFileContents(dataFile, expectedFields, GetFieldResult::Status::EndOfRecord, GetFieldResult::Status::NoFinalTerminator);
 }
@@ -150,11 +151,9 @@ TEST(DataFileTest, LoadEmptyFile)
 	const DataFile &dataFile = result.value();
 	EXPECT_EQ(dataFile.size(), 0) << "File size should be reported in code units";
 
-	const std::vector<std::vector<std::string_view>> expectedFields {
-		{ "" },
-	};
+	const std::vector<std::string_view> expectedField { "" };
 
-	TestFileContents(dataFile, expectedFields, GetFieldResult::Status::NoFinalTerminator, GetFieldResult::Status::NoFinalTerminator);
+	TestFileContents(dataFile, { &expectedField, 1 }, GetFieldResult::Status::NoFinalTerminator, GetFieldResult::Status::NoFinalTerminator);
 }
 
 TEST(DataFileTest, LoadEmptyFileWithBOM)
@@ -167,11 +166,9 @@ TEST(DataFileTest, LoadEmptyFileWithBOM)
 	const DataFile &dataFile = result.value();
 	EXPECT_EQ(dataFile.size(), 0) << "Loading a file containing a UTF8 byte order marker should strip that prefix";
 
-	const std::vector<std::vector<std::string_view>> expectedFields {
-		{ "" },
-	};
+	const std::vector<std::string_view> expectedField { "" };
 
-	TestFileContents(dataFile, expectedFields, GetFieldResult::Status::NoFinalTerminator, GetFieldResult::Status::NoFinalTerminator);
+	TestFileContents(dataFile, { &expectedField, 1 }, GetFieldResult::Status::NoFinalTerminator, GetFieldResult::Status::NoFinalTerminator);
 }
 
 TEST(DataFileTest, LoadUtf8WithBOM)
@@ -182,12 +179,12 @@ TEST(DataFileTest, LoadUtf8WithBOM)
 	const DataFile &dataFile = result.value();
 	EXPECT_EQ(dataFile.size(), 33) << "Loading a file containing a UTF8 byte order marker should strip that prefix";
 
-	const std::vector<std::vector<std::string_view>> expectedFields {
-		{ "Test", "Empty", "Values" },
-		{ "", "2", "3" },
-		{ "1", "2", "" },
-		{ "1", "", "3" },
-	};
+	const std::array<std::vector<std::string_view>, 4> expectedFields { {
+	    { "Test", "Empty", "Values" },
+	    { "", "2", "3" },
+	    { "1", "2", "" },
+	    { "1", "", "3" },
+	} };
 
 	TestFileContents(dataFile, expectedFields);
 }

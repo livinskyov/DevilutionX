@@ -129,7 +129,7 @@ void Deinit()
 	FreeDialogButtonGraphics();
 }
 
-void DialogLoop(const std::vector<std::unique_ptr<UiItemBase>> &items, const std::vector<std::unique_ptr<UiItemBase>> &renderBehind)
+void DialogLoop(const std::span<const std::unique_ptr<UiItemBase>> items, const std::span<const std::unique_ptr<UiItemBase>> renderBehind)
 {
 	SDL_Event event;
 	dialogEnd = false;
@@ -161,7 +161,7 @@ void DialogLoop(const std::vector<std::unique_ptr<UiItemBase>> &items, const std
 	} while (!dialogEnd);
 }
 
-void UiOkDialog(std::string_view caption, std::string_view text, bool error, const std::vector<std::unique_ptr<UiItemBase>> &renderBehind)
+void UiOkDialog(std::string_view caption, std::string_view text, bool error, const std::span<const std::unique_ptr<UiItemBase>> renderBehind)
 {
 	static bool inDialog = false;
 
@@ -209,7 +209,7 @@ void UiOkDialog(std::string_view caption, std::string_view text, bool error, con
 
 } // namespace
 
-void UiErrorOkDialog(std::string_view caption, std::string_view text, const std::vector<std::unique_ptr<UiItemBase>> &renderBehind)
+void UiErrorOkDialog(std::string_view caption, std::string_view text, const std::span<const std::unique_ptr<UiItemBase>> renderBehind)
 {
 	UiOkDialog(caption, text, /*error=*/true, renderBehind);
 }
@@ -219,7 +219,7 @@ void UiErrorOkDialog(std::string_view caption, std::string_view text, bool error
 	UiOkDialog(caption, text, error, vecNULL);
 }
 
-void UiErrorOkDialog(std::string_view text, const std::vector<std::unique_ptr<UiItemBase>> &renderBehind)
+void UiErrorOkDialog(std::string_view text, const std::span<const std::unique_ptr<UiItemBase>> renderBehind)
 {
 	UiErrorOkDialog({}, text, renderBehind);
 }

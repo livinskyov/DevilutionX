@@ -161,6 +161,6 @@ struct ModDependency {
  * dependency cycle, is logged as an error; the involved mods are still emitted in their
  * original relative order so a broken manifest never silently drops a mod.
  */
-[[nodiscard]] std::vector<std::string> OrderModsByDependencies(const std::vector<ModDependency> &mods);
+[[nodiscard]] std::vector<std::string> OrderModsByDependencies(std::span<const ModDependency> mods);
 
 } // namespace devilution

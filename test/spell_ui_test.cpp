@@ -13,7 +13,7 @@
  */
 
 #include <algorithm>
-#include <vector>
+#include <span>
 
 #include <gtest/gtest.h>
 
@@ -95,7 +95,7 @@ protected:
 	 * @return Pointer to the matching SpellListItem, or nullptr if not found.
 	 */
 	static const SpellListItem *FindInSpellList(
-	    const std::vector<SpellListItem> &items,
+	    const std::span<const SpellListItem> items,
 	    SpellID id,
 	    SpellType type)
 	{
@@ -110,7 +110,7 @@ protected:
 	 * @brief Find a spell list item by ID only (any type).
 	 */
 	static const SpellListItem *FindInSpellListById(
-	    const std::vector<SpellListItem> &items,
+	    const std::span<const SpellListItem> items,
 	    SpellID id)
 	{
 		for (const auto &item : items) {

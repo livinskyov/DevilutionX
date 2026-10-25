@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <optional>
+#include <span>
 
 #ifdef USE_SDL3
 #include <SDL3/SDL_events.h>
@@ -100,8 +101,8 @@ bool UiSelectGame(GameData *gameData, int *playerId);
 bool UiSelectProvider(GameData *gameData);
 void UiFadeIn();
 void UiHandleEvents(SDL_Event *event);
-bool UiItemMouseEvents(SDL_Event *event, const std::vector<UiItemBase *> &items);
-bool UiItemMouseEvents(SDL_Event *event, const std::vector<std::unique_ptr<UiItemBase>> &items);
+bool UiItemMouseEvents(SDL_Event *event, std::span<UiItemBase *const> items);
+bool UiItemMouseEvents(SDL_Event *event, std::span<const std::unique_ptr<UiItemBase>> items);
 Sint16 GetCenterOffset(Sint16 w, Sint16 bw = 0);
 void DrawMouse();
 void UiLoadDefaultPalette();
@@ -113,15 +114,15 @@ void UiFocusNavigationSelect();
 void UiFocusNavigationEsc();
 void UiFocusNavigationYesNo();
 
-void UiInitList(void (*fnFocus)(size_t value), void (*fnSelect)(size_t value), void (*fnEsc)(), const std::vector<std::unique_ptr<UiItemBase>> &items, bool wraps = false, void (*fnFullscreen)() = nullptr, bool (*fnYesNo)() = nullptr, size_t selectedItem = 0);
+void UiInitList(void (*fnFocus)(size_t value), void (*fnSelect)(size_t value), void (*fnEsc)(), std::span<const std::unique_ptr<UiItemBase>> items, bool wraps = false, void (*fnFullscreen)() = nullptr, bool (*fnYesNo)() = nullptr, size_t selectedItem = 0);
 void UiRenderListItems();
 void UiInitList_clear();
 
 void UiClearScreen();
 void UiPollAndRender(std::optional<tl::function_ref<bool(SDL_Event &)>> eventHandler = std::nullopt);
 void UiRenderItem(const UiItemBase &item);
-void UiRenderItems(const std::vector<UiItemBase *> &items);
-void UiRenderItems(const std::vector<std::unique_ptr<UiItemBase>> &items);
+void UiRenderItems(std::span<UiItemBase *const> items);
+void UiRenderItems(std::span<const std::unique_ptr<UiItemBase>> items);
 ClxSprite UiGetHeroDialogSprite(size_t heroClassIndex);
 
 void mainmenu_restart_repintro();

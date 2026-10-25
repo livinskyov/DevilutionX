@@ -72,7 +72,7 @@ key = value
 	result->set("sectionA", "key1", "newValue");
 	result->set("sectionA", "int", 1337);
 	result->set("sectionA", "bool yes", false);
-	const std::vector<std::string> newMulti { "x", "y", "z" };
+	const std::array<std::string, 3> newMulti { "x", "y", "z" };
 	result->set("sectionA", "multi", newMulti);
 	result->set("sectionA", "float", 10.5F);
 	EXPECT_EQ(result->serialize(), ReplaceNewlines(R"(; Section A comment

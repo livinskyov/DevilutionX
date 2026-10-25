@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <span>
 #include <string_view>
 
 #include <function_ref.hpp>
@@ -172,7 +173,7 @@ void SendInput()
 	HistoryIndex = -1;
 }
 
-void DrawAutocompleteSuggestions(const Surface &out, const std::vector<LuaAutocompleteSuggestion> &suggestions, Point position)
+void DrawAutocompleteSuggestions(const Surface &out, const std::span<const LuaAutocompleteSuggestion> suggestions, Point position)
 {
 	const int maxInnerWidth = out.w() - (TextPaddingX * 2);
 	if (AutocompleteSuggestionsMaxWidth == -1) {

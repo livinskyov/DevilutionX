@@ -9,6 +9,7 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
+#include <span>
 
 #include <ankerl/unordered_dense.h>
 
@@ -270,7 +271,7 @@ bool IsDebugAutomapHighlightNeeded()
 
 bool ShouldHighlightDebugAutomapTile(Point position)
 {
-	auto matchesSearched = [](const std::string_view name, const std::vector<std::string> &searchedNames) {
+	auto matchesSearched = [](const std::string_view name, const std::span<const std::string> searchedNames) {
 		const std::string lowercaseName = AsciiStrToLower(name);
 		for (const auto &searchedName : searchedNames) {
 			if (lowercaseName.find(searchedName) != std::string::npos) {
