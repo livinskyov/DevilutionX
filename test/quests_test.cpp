@@ -14,12 +14,8 @@ void ResetQuests()
 
 std::vector<quest_state> GetActiveFlagsForSlice(std::initializer_list<quest_id> ids)
 {
-	std::vector<quest_state> temp;
-
-	for (auto id : ids)
-		temp.push_back(Quests[id]._qactive);
-
-	return temp;
+	return ids | std::views::transform([](const quest_id id) { return Quests[id]._qactive; })
+	           | std::ranges::to<std::vector>();
 }
 
 TEST(QuestTest, SinglePlayerBadPools)

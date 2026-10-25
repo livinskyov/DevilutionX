@@ -197,9 +197,8 @@ void UiInitList(void (*fnFocus)(size_t value), void (*fnSelect)(size_t value), v
 	gfnListEsc = fnEsc;
 	gfnFullscreen = fnFullscreen;
 	gfnListYesNo = fnYesNo;
-	gUiItems.clear();
-	for (const auto &item : items)
-		gUiItems.push_back(item.get());
+	const auto rawView = items | std::views::transform(&std::unique_ptr<UiItemBase>::get);
+	gUiItems.assign(rawView.begin(), rawView.end());
 	UiItemsWraps = itemsWraps;
 	listOffset = 0;
 	if (fnFocus != nullptr)

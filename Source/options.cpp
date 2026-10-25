@@ -14,6 +14,7 @@
 #include <functional>
 #include <iterator>
 #include <optional>
+#include <ranges>
 #include <span>
 #include <string>
 #include <unordered_set>
@@ -398,9 +399,7 @@ size_t OptionEntryIntBase::GetListSize() const
 std::string_view OptionEntryIntBase::GetListDescription(size_t index) const
 {
 	if (entryNames.empty()) {
-		for (auto entryValue : entryValues) {
-			entryNames.push_back(StrCat(entryValue));
-		}
+		entryNames.append_range(entryValues | std::views::transform(&StrCat<const int &>));
 	}
 	return entryNames[index].data();
 }
@@ -1178,11 +1177,8 @@ KeymapperOptions::KeymapperOptions()
 
 std::vector<OptionEntryBase *> KeymapperOptions::GetEntries()
 {
-	std::vector<OptionEntryBase *> entries;
-	for (Action &action : actions) {
-		entries.push_back(&action);
-	}
-	return entries;
+	return actions | std::views::transform([](Action &action) -> OptionEntryBase * { return &action; })
+		           | std::ranges::to<std::vector>();
 }
 
 KeymapperOptions::Action::Action(std::string_view key, const char *name, const char *description, uint32_t defaultKey, std::function<void()> actionPressed, std::function<void()> actionReleased, std::function<bool()> enable, unsigned index)
@@ -1356,11 +1352,8 @@ PadmapperOptions::PadmapperOptions()
 
 std::vector<OptionEntryBase *> PadmapperOptions::GetEntries()
 {
-	std::vector<OptionEntryBase *> entries;
-	for (Action &action : actions) {
-		entries.push_back(&action);
-	}
-	return entries;
+	return actions | std::views::transform([](Action &action) -> OptionEntryBase * { return &action; })
+	               | std::ranges::to<std::vector>();
 }
 
 PadmapperOptions::Action::Action(std::string_view key, const char *name, const char *description, ControllerButtonCombo defaultInput, std::function<void()> actionPressed, std::function<void()> actionReleased, std::function<bool()> enable, unsigned index)

@@ -320,7 +320,7 @@ void FindMeleeTarget()
 		const int startX = myPlayer.position.future.x;
 		const int startY = myPlayer.position.future.y;
 		visited[startX][startY] = true;
-		queue.push_back({ startX, startY, 0 });
+		queue.emplace_back(startX, startY, 0);
 	}
 
 	while (!queue.empty()) {
@@ -364,7 +364,7 @@ void FindMeleeTarget()
 			}
 
 			if (CanStep({ node.x, node.y }, { dx, dy })) {
-				queue.push_back({ dx, dy, node.steps + 1 });
+				queue.emplace_back(dx, dy, node.steps + 1);
 				visited[dx][dy] = true;
 			}
 		}

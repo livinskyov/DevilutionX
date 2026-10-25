@@ -1367,7 +1367,7 @@ _item_indexes GetItemIndexForDroppableItem(bool considerDropRate, tl::function_r
 		if (!isItemOkay(item))
 			continue;
 		cumulativeWeight += considerDropRate ? item.dropRate : 1;
-		ril.push_back({ static_cast<_item_indexes>(i), cumulativeWeight });
+		ril.emplace_back(static_cast<_item_indexes>(i), cumulativeWeight);
 	}
 	const auto targetWeight = static_cast<unsigned>(RandomIntLessThan(static_cast<int>(cumulativeWeight)));
 	return std::upper_bound(ril.begin(), ril.end(), targetWeight, [](unsigned target, const WeightedItemIndex &value) { return target < value.cumulativeWeight; })->index;

@@ -476,12 +476,12 @@ struct CompareTargets {
 HeroCompareResult CompareSaves(const std::string &actualSavePath, const std::string &referenceSavePath, bool logDetails)
 {
 	std::vector<CompareTargets> possibleFileToCheck;
-	possibleFileToCheck.push_back({ "hero", "hero", false });
-	possibleFileToCheck.push_back({ "game", "game", false });
-	possibleFileToCheck.push_back({ "additionalMissiles", "additionalMissiles", false });
+	possibleFileToCheck.emplace_back("hero", "hero", false);
+	possibleFileToCheck.emplace_back("game", "game", false);
+	possibleFileToCheck.emplace_back("additionalMissiles", "additionalMissiles", false);
 	char szPerm[MaxMpqPathSize];
 	for (int i = 0; GetPermSaveNames(i, szPerm); i++) {
-		possibleFileToCheck.push_back({ std::string(szPerm), "level", i == 0 });
+		possibleFileToCheck.emplace_back(szPerm, "level", i == 0);
 	}
 
 	SaveReader actualArchive = *CreateSaveReader(std::string(actualSavePath));

@@ -146,7 +146,7 @@ std::expected<void, PacketError> protocol_zt::send(const endpoint &peer, const b
 	std::expected<buffer_t, PacketError> frame = frame_queue::MakeFrame(data);
 	if (!frame.has_value())
 		return std::unexpected(frame.error());
-	peer_list[peer].send_queue.push_back(*frame);
+	peer_list[peer].send_queue.push_back(*std::move(frame));
 	return {};
 }
 

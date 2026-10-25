@@ -225,7 +225,7 @@ TEST(ModIdentity, ActiveModSaveExtensionOptInLastWins)
 	ModIdentifier cosmetic;
 	cosmetic.name = "clock";
 	cosmetic.whitelisted = true;
-	ActiveModIdentifiers.push_back(cosmetic);
+	ActiveModIdentifiers.push_back(std::move(cosmetic));
 	EXPECT_TRUE(GetActiveModSaveExtension().empty());
 
 	// A mod that opts in overrides it; a leading dot is stripped.
@@ -233,7 +233,7 @@ TEST(ModIdentity, ActiveModSaveExtensionOptInLastWins)
 	hf.name = "hf";
 	hf.whitelisted = true;
 	hf.manifest.saveExtension = ".hsv";
-	ActiveModIdentifiers.push_back(hf);
+	ActiveModIdentifiers.push_back(std::move(hf));
 	EXPECT_EQ(GetActiveModSaveExtension(), "hsv");
 
 	// The last active mod that declares one wins.
@@ -241,7 +241,7 @@ TEST(ModIdentity, ActiveModSaveExtensionOptInLastWins)
 	other.name = "other";
 	other.whitelisted = true;
 	other.manifest.saveExtension = "msv";
-	ActiveModIdentifiers.push_back(other);
+	ActiveModIdentifiers.push_back(std::move(other));
 	EXPECT_EQ(GetActiveModSaveExtension(), "msv");
 
 	ClearModIdentifiers();
@@ -251,7 +251,7 @@ TEST(ModIdentity, ActiveModSaveExtensionOptInLastWins)
 	ModIdentifier untrusted;
 	untrusted.name = "community";
 	untrusted.whitelisted = false;
-	ActiveModIdentifiers.push_back(untrusted);
+	ActiveModIdentifiers.push_back(std::move(untrusted));
 	EXPECT_EQ(GetActiveModSaveExtension(), "msv");
 
 	// A whitelisted mod's declared extension still overrides that floor (last-wins).
@@ -259,7 +259,7 @@ TEST(ModIdentity, ActiveModSaveExtensionOptInLastWins)
 	branded.name = "hf";
 	branded.whitelisted = true;
 	branded.manifest.saveExtension = "hsv";
-	ActiveModIdentifiers.push_back(branded);
+	ActiveModIdentifiers.push_back(std::move(branded));
 	EXPECT_EQ(GetActiveModSaveExtension(), "hsv");
 
 	ClearModIdentifiers();

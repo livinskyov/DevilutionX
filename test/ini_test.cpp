@@ -3,6 +3,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include <ranges>
 #include <string_view>
 
 namespace devilution {
@@ -58,10 +59,7 @@ key = value
 	EXPECT_EQ(result->getString("sectionA", "key2"), "value2");
 	{
 		const std::span<const Ini::Value> multiVals = result->get("sectionA", "multi");
-		std::vector<std::string> multiStrs;
-		for (const Ini::Value &val : multiVals) {
-			multiStrs.push_back(val.value);
-		}
+		const auto multiStrs = multiVals | std::views::transform(&Ini::Value::value);
 		EXPECT_THAT(multiStrs, ElementsAre(Eq("a"), Eq("b")));
 	}
 	EXPECT_EQ(result->getInt("sectionA", "int", 0), -3);

@@ -313,9 +313,7 @@ void ItemSelected(size_t value)
 				selectedOption = pOption;
 				endMenu = true;
 			} else {
-				vecItem->args.clear();
-				for (auto &arg : args)
-					vecItem->args.push_back(arg);
+				vecItem->args = std::move(args);
 				if (optionUsesTwoLines) {
 					vecDialogItems[value + 1]->m_text = std::string(pOption->GetValueDescription());
 				}
@@ -350,9 +348,7 @@ void FullscreenChanged()
 		if (pOption != fullscreenOption)
 			continue;
 
-		vecItem->args.clear();
-		for (auto &arg : CreateDrawStringFormatArgForEntry(pOption))
-			vecItem->args.push_back(arg);
+		vecItem->args = CreateDrawStringFormatArgForEntry(pOption);
 		break;
 	}
 }

@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <ranges>
 #include <string>
 #include <vector>
 
@@ -443,12 +444,11 @@ private:
 	    , m_y(y)
 	    , m_width(item_width)
 	    , m_height(item_height)
+	    , m_vecItems(vItems | std::views::transform(&std::unique_ptr<UiListItem>::get)
+			                | std::ranges::to<std::vector>())
 	    , spacing_(spacing)
+	    , pressed_item_index_(-1)
 	{
-		for (const auto &item : vItems)
-			m_vecItems.push_back(item.get());
-
-		pressed_item_index_ = -1;
 	}
 
 	int spacing_;

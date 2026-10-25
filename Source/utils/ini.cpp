@@ -8,6 +8,7 @@
 #include <cstring>
 #include <expected>
 #include <format>
+#include <ranges>
 #include <span>
 #include <string>
 #include <string_view>
@@ -88,12 +89,8 @@ std::vector<std::string> Ini::getKeys(std::string_view section) const
 	std::vector<std::pair<std::string, ValuesData>> entries(sectionIt->second.entries.begin(), sectionIt->second.entries.end());
 	c_sort(entries, OrderByValueIndex<ValuesData>);
 
-	std::vector<std::string> keys;
-	keys.reserve(entries.size());
-	for (const auto &[key, _] : entries) {
-		keys.push_back(key);
-	}
-	return keys;
+	return entries | std::views::keys
+	               | std::ranges::to<std::vector>();
 }
 
 std::span<const Ini::Value> Ini::Values::get() const
@@ -343,10 +340,8 @@ void Ini::set(std::string_view section, std::string_view key, std::span<const st
 	} else {
 		Values values;
 		auto &items = std::get<std::vector<Value>>(values.rep_);
-		items.reserve(strings.size());
-		for (const std::string &str : strings) {
-			items.push_back(Value { .comment = {}, .value = str });
-		}
+		items = strings | std::views::transform([](const std::string &str) { return Value { .comment = { }, .value = str }; })
+			            | std::ranges::to<std::vector>();
 		set(section, key, std::move(values));
 	}
 }

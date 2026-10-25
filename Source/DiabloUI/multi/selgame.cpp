@@ -715,11 +715,7 @@ void RefreshGameList()
 	if (lastUpdate == 0 || currentTime - lastUpdate > 5000) {
 		const int gameIndex = vecSelGameDlgItems[HighlightedItem]->m_value - 3;
 		const std::string gameSearch = gameIndex >= 0 ? Gamelist[gameIndex].name : "";
-		std::vector<GameInfo> gamelist = DvlNet_GetGamelist();
-		Gamelist.clear();
-		for (unsigned i = 0; i < gamelist.size(); i++) {
-			Gamelist.push_back(gamelist[i]);
-		}
+		Gamelist = DvlNet_GetGamelist();
 		UiInitGameSelectionList(gameSearch);
 		lastUpdate = currentTime;
 	}

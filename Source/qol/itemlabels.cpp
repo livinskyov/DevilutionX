@@ -129,7 +129,7 @@ void AddItemToLabelQueue(int id, Point position)
 	}
 	position.x -= nameWidth / 2;
 	position.y -= LabelHeight();
-	labelQueue.push_back(ItemLabel { id, nameWidth, position, std::move(textOnGround) });
+	labelQueue.emplace_back(id, nameWidth, position, std::move(textOnGround));
 }
 
 bool IsMouseOverGameArea()

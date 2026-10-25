@@ -318,9 +318,9 @@ void RecursivelyCreateDir(const char *path)
 	std::vector<std::string> paths;
 	std::string cur { path };
 	do {
-		paths.push_back(cur);
-		std::string_view parent = Dirname(cur);
-		if (parent == cur)
+		paths.push_back(std::move(cur));
+		std::string_view parent = Dirname(paths.back());
+		if (parent == paths.back())
 			break;
 		cur.assign(parent.data(), parent.size());
 	} while (!DirectoryExists(cur.c_str()));
@@ -530,7 +530,7 @@ std::vector<std::string> ListDirectories(const char *path)
 		if (folder == "." || folder == "..")
 			continue;
 		if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-			dirs.push_back(folder);
+			dirs.push_back(std::move(folder));
 	} while (FindNextFileA(hFind, &findData));
 	FindClose(hFind);
 #elif (_POSIX_C_SOURCE >= 200112L || defined(_BSD_SOURCE) || defined(__APPLE__))
@@ -575,7 +575,7 @@ std::vector<std::string> ListFiles(const char *path)
 		if (file == "." || file == "..")
 			continue;
 		if (!(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-			files.push_back(file);
+			files.push_back(std::move(file));
 	} while (FindNextFileA(hFind, &findData));
 	FindClose(hFind);
 #elif (_POSIX_C_SOURCE >= 200112L || defined(_BSD_SOURCE) || defined(__APPLE__))

@@ -7,6 +7,7 @@
 #include <cmath>
 #include <cstdint>
 #include <optional>
+#include <ranges>
 #include <utility>
 
 #ifdef USE_SDL3
@@ -1426,20 +1427,15 @@ std::vector<int> SortItemsBySize(Player &player)
 	}
 
 	// Sort items by height first, then by width
-	std::sort(itemSizes.begin(), itemSizes.end(), [](const auto &a, const auto &b) {
-		if (a.first.height == b.first.height) return a.first.width > b.first.width;
-		return a.first.height > b.first.height;
-	});
+	const auto byHeightThenByWidth = [](const Size &a, const Size &b) {
+		if (a.height == b.height) return a.width > b.width;
+		return a.height > b.height;
+	};
+	std::ranges::sort(itemSizes, byHeightThenByWidth, &std::pair<Size, int>::first);
 
 	// Extract sorted indices
-	std::vector<int> sortedIndices;
-	sortedIndices.reserve(itemSizes.size()); // Pre-allocate the necessary capacity
-
-	for (const auto &itemSize : itemSizes) {
-		sortedIndices.push_back(itemSize.second);
-	}
-
-	return sortedIndices;
+	return itemSizes | std::views::values
+		             | std::ranges::to<std::vector>();
 }
 
 void ReorganizeInventory(Player &player)
@@ -1457,8 +1453,8 @@ void ReorganizeInventory(Player &player)
 		tempStorage[i] = player.InvList[i];
 		player.InvList[i] = {};
 	}
-	player._pNumInv = 0;                                                // Reset inventory count
-	std::fill(std::begin(player.InvGrid), std::end(player.InvGrid), 0); // Clear InvGrid
+	player._pNumInv = 0;                                                                     // Reset inventory count
+	std::fill(std::begin(player.InvGrid), std::end(player.InvGrid), static_cast<int8_t>(0)); // Clear InvGrid
 
 	// Attempt to place items back, now from the temp storage
 	bool reorganizationFailed = false;

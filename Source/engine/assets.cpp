@@ -7,6 +7,7 @@
 #include <expected>
 #include <functional>
 #include <memory>
+#include <ranges>
 #include <string_view>
 #include <vector>
 
@@ -726,19 +727,17 @@ void LoadModArchives(std::span<const std::string_view> modnames)
 	ClearModIdentifiers();
 
 #ifdef UNPACKED_MPQS
-	const std::vector<std::string_view> activeMods(modnames.begin(), modnames.end());
+	const auto activeMods = modnames | std::views::all;
 #else
 	// Order the active mods so every mod's declared requiredMods load first: a dependency gets a
 	// lower priority (loaded earlier, forms the base) and its dependents get higher priorities
 	// (loaded later, override it). `requires` is read from each packed mod's manifest in a
 	// pre-pass, because the real load below fixes priorities in iteration order.
 	const std::vector<std::string> searchPaths = GetMPQSearchPaths();
-	std::vector<ModDependency> deps;
-	deps.reserve(modnames.size());
-	for (const std::string_view modname : modnames)
-		deps.push_back(ModDependency { std::string(modname), ReadPackedModRequiredMods(searchPaths, modname) });
+	auto deps = modnames | std::views::transform([&](const std::string_view modname) { return ModDependency { std::string(modname), ReadPackedModRequiredMods(searchPaths, modname) }; })
+		                 | std::ranges::to<std::vector>();
 	const std::vector<std::string> orderedNames = OrderModsByDependencies(deps);
-	const std::vector<std::string_view> activeMods(orderedNames.begin(), orderedNames.end());
+	const auto activeMods = orderedNames | std::views::transform([](const std::string &name) -> std::string_view { return name; });
 
 	// Tracks, per active mod, whether a loose override directory was found. Such mods carry no
 	// identifier (they are gated by the loose-asset integrity check) and are not built-in.

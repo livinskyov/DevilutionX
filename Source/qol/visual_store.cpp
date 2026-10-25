@@ -168,7 +168,7 @@ void RefreshVisualStoreLayout()
 				for (auto itemPoint : PointsInRectangle(Rectangle { stashPosition, itemSize })) {
 					currentPage->grid[itemPoint.x][itemPoint.y] = i + 1;
 				}
-				currentPage->items.push_back({ i, stashPosition + Displacement { 0, itemSize.height - 1 } });
+				currentPage->items.emplace_back(i, stashPosition + Displacement { 0, itemSize.height - 1 });
 				placed = true;
 				break;
 			}
@@ -191,7 +191,7 @@ void RefreshVisualStoreLayout()
 					for (auto itemPoint : PointsInRectangle(Rectangle { stashPosition, itemSize })) {
 						currentPage->grid[itemPoint.x][itemPoint.y] = i + 1;
 					}
-					currentPage->items.push_back({ i, stashPosition + Displacement { 0, itemSize.height - 1 } });
+					currentPage->items.emplace_back(i, stashPosition + Displacement { 0, itemSize.height - 1 });
 					placed = true;
 					break;
 				}

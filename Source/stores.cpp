@@ -117,10 +117,10 @@ void RegisterTownerDialogOption(std::string_view townerName,
 	}
 
 	if (auto *opts = FindExtraTownerOptions(townerName); opts != nullptr) {
-		opts->push_back({ std::move(getLabel), std::move(onSelect) });
+		opts->emplace_back(std::move(getLabel), std::move(onSelect));
 	} else {
 		std::vector<TownerDialogOption> newOpts;
-		newOpts.push_back({ std::move(getLabel), std::move(onSelect) });
+		newOpts.emplace_back(std::move(getLabel), std::move(onSelect));
 		ExtraTownerOptions.emplace_back(std::string(townerName), std::move(newOpts));
 	}
 }

@@ -135,7 +135,7 @@ void AddMessageToChatLog(std::string_view message, Player *player, UiFlags flags
 		std::stringstream ss(text);
 
 		for (std::string s; getline(ss, s, '\n');) {
-			lines.push_back(s);
+			lines.push_back(std::move(s));
 		}
 		for (int i = static_cast<int>(lines.size()) - 1; i >= 1; i--) {
 			ChatLogLines.emplace_back(MultiColoredText { lines[i], {} });

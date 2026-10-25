@@ -1848,7 +1848,7 @@ void CreateRoom(WorldTilePosition topLeft, WorldTilePosition bottomRight, int nR
 			const int nHh = RoomList[nRDest].bottomRight.y - RoomList[nRDest].topLeft.y - 2;
 			nHy2 = GenerateRnd(nHh) + RoomList[nRDest].topLeft.y + 1;
 		}
-		HallList.push_back({ { nHx1, nHy1 }, { nHx2, nHy2 }, nHDir });
+		HallList.emplace_back(WorldTilePosition { nHx1, nHy1 }, WorldTilePosition { nHx2, nHy2 }, nHDir);
 	}
 
 	const WorldTilePosition roomBottomLeft { roomTopLeft.x, roomBottomRight.y };

@@ -154,7 +154,7 @@ bool SatisfiesRequiredIdentifier(const ModIdentifier &mod, std::span<const uint8
 void RegisterBuiltinModIdentifier(std::string_view name)
 {
 	ModIdentifier identifier;
-	identifier.name = std::string(name);
+	identifier.name = name;
 	identifier.hash = {};
 	identifier.whitelisted = true; // provenance: resolves purely from core archives
 	ActiveModIdentifiers.push_back(std::move(identifier));
@@ -167,7 +167,7 @@ std::string ModHashToHex(std::span<const uint8_t, 32> hash)
 
 bool IsHashWhitelisted(std::span<const uint8_t, 32> hash)
 {
-	for (const std::array<uint8_t, 32> &approved : ApprovedModHashes) {
+	for (const std::span<const uint8_t, 32> approved : ApprovedModHashes) {
 		if (std::equal(approved.begin(), approved.end(), hash.begin()))
 			return true;
 	}

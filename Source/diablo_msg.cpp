@@ -133,7 +133,7 @@ void InitDiabloMsg(std::string_view msg, uint32_t duration /*= 3500*/)
 	    != DiabloMessages.end())
 		return;
 
-	DiabloMessages.push_back({ std::string(msg), duration });
+	DiabloMessages.emplace_back(std::string(msg), duration);
 	if (DiabloMessages.size() == 1) {
 		InitDiabloMsg();
 	}

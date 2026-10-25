@@ -1179,11 +1179,11 @@ void DiabloParseFlags(int argc, char **argv)
 			DebugDisableNetworkTimeout = true;
 		} else if (arg[0] == '+') {
 			if (!currentCommand.empty())
-				DebugCmdsFromCommandLine.push_back(currentCommand);
+				DebugCmdsFromCommandLine.push_back(std::move(currentCommand));
 			argumentIndexOfLastCommandPart = i;
 			currentCommand = arg.substr(1);
 		} else if (arg[0] != '-' && (argumentIndexOfLastCommandPart + 1) == i) {
-			currentCommand.append(" ");
+			currentCommand.push_back(' ');
 			currentCommand.append(arg);
 			argumentIndexOfLastCommandPart = i;
 #endif
@@ -1198,7 +1198,7 @@ void DiabloParseFlags(int argc, char **argv)
 
 #ifdef _DEBUG
 	if (!currentCommand.empty())
-		DebugCmdsFromCommandLine.push_back(currentCommand);
+		DebugCmdsFromCommandLine.push_back(std::move(currentCommand));
 #endif
 
 #ifndef DISABLE_DEMOMODE

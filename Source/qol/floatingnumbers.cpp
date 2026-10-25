@@ -78,7 +78,7 @@ void AddFloatingNumber(Point pos, Displacement offset, std::string text, UiFlags
 		static_cast<uint32_t>(SDL_GetTicks()),
 		style | UiFlags::Outlined, id, reverseDirection
 	};
-	FloatingQueue.push_back(num);
+	FloatingQueue.push_back(std::move(num));
 }
 
 void DrawFloatingNumbers(const Surface &out, Point viewPosition, Displacement offset)
